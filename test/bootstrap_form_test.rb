@@ -535,6 +535,25 @@ class BootstrapFormTest < ActionView::TestCase
     assert_equivalent_xml expected, output
   end
 
+  test "alert_message allows wrapping to be turned off" do
+    @user.email = nil
+    assert @user.invalid?
+
+    output = bootstrap_form_for(@user) do |f|
+      f.alert_message("Please fix the following errors:", error_summary: false, wrap: false)
+    end
+
+    expected = <<-HTML.strip_heredoc
+      <form accept-charset="UTF-8" action="/users" class="new_user" id="new_user" method="post" role="form">
+        <input name="utf8" type="hidden" value="&#x2713;" />
+        <div class="alert alert-danger">
+          Please fix the following errors:
+        </div>
+      </form>
+    HTML
+    assert_equivalent_xml expected, output
+  end
+
   test "alert_message allows the error_summary to be turned on with inline_errors also turned on" do
     @user.email = nil
     assert @user.invalid?
